@@ -102,7 +102,7 @@ export default function StatusScreen() {
                     style={[styles.button, styles.controlButton, styles.stopButton]}
                     onPress={stopTimer}
                   >
-                    <Text style={styles.buttonText}>Stop</Text>
+                    <Text style={styles.buttonText}>Rest</Text>
                   </TouchableOpacity>
                 </View>
               </View>
