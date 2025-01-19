@@ -26,39 +26,32 @@ export default function App() {
             }
 
             return (
-              <View style={[
-                styles.iconContainer,
-                focused && styles.focusedIconContainer
-              ]}>
+              <View style={[styles.iconContainer, focused && styles.focusedIcon]}>
                 <Image source={imageSource} style={styles.icon} />
               </View>
             );
           },
-          tabBarStyle: {
-            height: 100,
-            paddingTop: 15,
-            paddingBottom: 20,
-            borderTopWidth: 1,
-            borderTopColor: '#999',
-            elevation: 8,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: -4,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-          },
-          tabBarLabelStyle: {
-            fontSize: 14,
-            paddingBottom: 12,
-            marginTop: 8,
+          tabBarShowLabel: false,
+          headerStyle: {
+            height: 110,
           },
         })}
-        initialRouteName="Shop"
       >
         <Tab.Screen name="Status" component={StatusScreen} />
-        <Tab.Screen name="Shop" component={ShopScreen} />
+        <Tab.Screen 
+          name="Shop" 
+          component={ShopScreen}
+          options={{
+            headerRight: () => (
+              <View style={styles.headerCoinContainer}>
+                <Image 
+                  source={require('./assets/coin.png')} 
+                  style={styles.headerCoin}
+                />
+              </View>
+            ),
+          }}
+        />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
       <StatusBar style="auto" />
@@ -67,21 +60,27 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 50,
+    height: 50,
   },
-  iconContainer: {
-    padding: 12,
-    borderRadius: 12,
-  },
-  focusedIconContainer: {
-    backgroundColor: 'rgba(0,0,0,0.1)',
+  focusedIcon: {
+    backgroundColor: '#E8E8E8',
+    borderRadius: 25,
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
+  headerCoinContainer: {
+    marginRight: 15,
+  },
+  headerCoin: {
+    width: 150,
+    height: 30,
+    resizeMode: 'contain',
+  }
 });
