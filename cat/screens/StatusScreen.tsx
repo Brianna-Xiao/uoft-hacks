@@ -101,12 +101,16 @@ export default function StatusScreen() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.content}>
-          <Text style={styles.title}>Status</Text>
-            {orientation === 'up' ? (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  <Sick/>
-                </View>
-            ): (<Sleep />)}
+            <Text style={styles.title}>Status</Text>
+          {!isActive ? (
+              <Sleep />
+          ) : orientation === 'up' ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Sick />
+            </View>
+          ) : (
+            <Sleep />
+          )}
           </View>
           <View style={styles.timerContainer}>
             {!isActive ? (
