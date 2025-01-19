@@ -1,5 +1,8 @@
 {
   "scripts": {
     "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "dependencies": {
+    "expo": "^52.0.25"
   }
-} 
+}
