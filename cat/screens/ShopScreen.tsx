@@ -3,11 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function ShopScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Shop</Text>
-      <View style={styles.contentContainer}>
-        <Text>Available Items</Text>
+      
       </View>
-    </View>
   );
 }
 

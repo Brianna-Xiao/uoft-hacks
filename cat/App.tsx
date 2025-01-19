@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ShopScreen from './screens/ShopScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import StatusScreen from './screens/StatusScreen';
+import HistoryScreen from './screens/HistoryScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,12 +18,16 @@ export default function App() {
           tabBarIcon: ({ focused }) => {
             let imageSource;
 
-            if (route.name === 'Shop') {
-              imageSource = require('./assets/shop.png');
-            } else if (route.name === 'Profile') {
+            // if (route.name === 'Shop') {
+            //   imageSource = require('./assets/shop.png');
+            // } else 
+            if (route.name === 'Profile') {
               imageSource = require('./assets/profile.png');
             } else if (route.name === 'Status') {
               imageSource = require('./assets/status.png');
+            }
+            else if (route.name === 'History') {
+              imageSource = require('./assets/shop.png');
             }
 
             return (
@@ -38,20 +43,17 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Status" component={StatusScreen} />
-        <Tab.Screen 
+        {/* <Tab.Screen 
           name="Shop" 
           component={ShopScreen}
           options={{
             headerRight: () => (
               <View style={styles.headerCoinContainer}>
-                <Image 
-                  source={require('./assets/coin.png')} 
-                  style={styles.headerCoin}
-                />
               </View>
             ),
           }}
-        />
+        /> */}
+        <Tab.Screen name="History" component={HistoryScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
       <StatusBar style="auto" />

@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#fff',
   },
   timerContainer: {
     padding: 20,
