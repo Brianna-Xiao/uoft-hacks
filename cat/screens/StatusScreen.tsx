@@ -31,19 +31,15 @@ export default function StatusScreen() {
   const _subscribe = () => {
     setSubscription(
       Accelerometer.addListener(accelerometerData => {
-        const { z } = accelerometerData;
-        if (z > 0.7) {
-          setOrientation('down');
-          setIsPaused(false); // Resume the timer when the phone is faced down
-        } else if (z < -0.7) {
+        if (accelerometerData.z > 0.7) {
           setOrientation('up');
-          setIsPaused(true); // Pause the timer when the phone is faced up
+          setIsPaused(true);
         } else {
           setOrientation('');
         }
       })
     );
-    Accelerometer.setUpdateInterval(1000); // Update once every second
+    Accelerometer.setUpdateInterval(1000);
   };
 
   const _unsubscribe = () => {
@@ -70,86 +66,84 @@ export default function StatusScreen() {
     if (minutes) {
       setSeconds(parseInt(minutes) * 60);
       setIsActive(true);
-      setIsPaused(false);
       setMinutes('');
     }
   };
 
-  const togglePause = () => {
+  const stopTimer = () => {
+    setIsActive(false);
+    setSeconds(0);
+    setIsPaused(false);
+  };
+
+  const toggleTimer = () => {
     setIsPaused(!isPaused);
   };
 
-  const stopTimer = () => {
-    setIsActive(false);
-    setIsPaused(false);
-    setSeconds(0);
-  };
-
-  const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
+  const formatTime = (timeInSeconds: number) => {
+    const mins = Math.floor(timeInSeconds / 60);
+    const secs = timeInSeconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          <View style={styles.content}>
-            <Text style={styles.title}>Status</Text>
-          {!isActive ? (
-              <Sleep />
-          ) : orientation === 'up' ? (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Sick />
+          <View style={styles.mainContainer}>
+            <View style={styles.imageContainer}>
+              {!isActive ? (
+                <Sleep />
+              ) : orientation === 'up' ? (
+                <Sick />
+              ) : (
+                <Sleep />
+              )}
             </View>
-          ) : (
-            <Sleep />
-          )}
-          </View>
-          <View style={styles.timerContainer}>
-            {!isActive ? (
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.input}
-                  value={minutes}
-                  onChangeText={setMinutes}
-                  placeholder="Enter minutes"
-                  keyboardType="numeric"
-                  returnKeyType="done"
-                  onSubmitEditing={Keyboard.dismiss}
-                />
-                <TouchableOpacity 
-                  style={styles.button}
-                  onPress={startTimer}
-                >
-                  <Text style={styles.buttonText}>Start</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={styles.activeTimerContainer}>
-                <Text style={styles.timerText}>{formatTime(seconds)}</Text>
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity 
-                    style={[styles.button, styles.controlButton]}
-                    onPress={togglePause}
+            <View style={styles.timerContainer}>
+              {!isActive ? (
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    value={minutes}
+                    onChangeText={setMinutes}
+                    placeholder="Enter minutes"
+                    keyboardType="numeric"
+                    returnKeyType="done"
+                    onSubmitEditing={Keyboard.dismiss}
+                  />
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={startTimer}
                   >
-                    <Text style={styles.buttonText}>
-                      {isPaused ? 'Resume' : 'Pause'}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={[styles.button, styles.controlButton, styles.stopButton]}
-                    onPress={stopTimer}
-                  >
-                    <Text style={styles.buttonText}>Reset</Text>
+                    <Text style={styles.buttonText}>Start</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
-            )}
+              ) : (
+                <View>
+                  <Text style={styles.timerText}>{formatTime(seconds)}</Text>
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                      style={[styles.button, styles.controlButton]}
+                      onPress={toggleTimer}
+                    >
+                      <Text style={styles.buttonText}>
+                        {isPaused ? 'Resume' : 'Pause'}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.button, styles.controlButton, styles.stopButton]}
+                      onPress={stopTimer}
+                    >
+                      <Text style={styles.buttonText}>Stop</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -162,23 +156,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  content: {
+  mainContainer: {
     flex: 1,
-    alignItems: 'center',
-    paddingTop: 40,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    paddingVertical: 50,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 50,
   },
   timerContainer: {
-    padding: 20,
-    marginBottom: 80,
-    alignItems: 'center',
-  },
-  activeTimerContainer: {
     alignItems: 'center',
   },
   inputContainer: {
@@ -204,6 +191,17 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
   },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  timerText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
   controlButton: {
     marginHorizontal: 10,
     minWidth: 80,
@@ -211,20 +209,5 @@ const styles = StyleSheet.create({
   },
   stopButton: {
     backgroundColor: '#FF3B30',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  timerText: {
-    fontSize: 40,
-    fontWeight: 'bold',
-  },
-  orientationText: {
-    fontSize: 16,
-    marginTop: 20,
-    textAlign: 'center',
-    color: '#666',
   },
 });
