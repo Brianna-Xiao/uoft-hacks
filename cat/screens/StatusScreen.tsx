@@ -46,19 +46,13 @@ export default function StatusScreen() {
     loadHistory();
   }, []);
 
-  // useEffect(() => {
-  //   const clearHistoryOnce = async () => {
-  //     try {
-  //       await AsyncStorage.removeItem('timerHistory');
-  //       setHistory([]);
-  //       console.log('History cleared');
-  //     } catch (error) {
-  //       console.error('Failed to clear history', error);
-  //     }
-  //   };
-
-  //   clearHistoryOnce();
-  // }, []);
+  const saveHistory = async (newHistory: { timestamp: string, length: string }[]) => {
+    try {
+      await AsyncStorage.setItem('timerHistory', JSON.stringify(newHistory));
+    } catch (error) {
+      console.error('Failed to save history', error);
+    }
+  };
 
   const _subscribe = () => {
     setSubscription(
@@ -81,14 +75,6 @@ export default function StatusScreen() {
   const _unsubscribe = () => {
     subscription && subscription.remove();
     setSubscription(null);
-  };
-
-  const saveHistory = async (newHistory: { timestamp: string, length: string }[]) => {
-    try {
-      await AsyncStorage.setItem('timerHistory', JSON.stringify(newHistory));
-    } catch (error) {
-      console.error('Failed to save history', error);
-    }
   };
 
   useEffect(() => {
@@ -139,18 +125,7 @@ export default function StatusScreen() {
   const formatTime = (totalSeconds: number) => {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
-    console.log('Formatting Time:', mins, secs);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
-  const clearHistory = async () => {
-    try {
-      await AsyncStorage.removeItem('timerHistory');
-      setHistory([]);
-      console.log('History cleared');
-    } catch (error) {
-      console.error('Failed to clear history', error);
-    }
   };
 
   return (
