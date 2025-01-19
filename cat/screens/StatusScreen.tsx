@@ -10,13 +10,43 @@ import {
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native';
+import { Accelerometer } from 'expo-sensors';
 import Sleep from '../components/Sleep';
+import { Subscription } from 'expo-sensors/build/Pedometer';
 
 export default function StatusScreen() {
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [orientation, setOrientation] = useState('');
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+
+  useEffect(() => {
+    _subscribe();
+    return () => _unsubscribe();
+  }, []);
+
+  const _subscribe = () => {
+    setSubscription(
+      Accelerometer.addListener(accelerometerData => {
+        const { z } = accelerometerData;
+        if (z > 0.7) {
+          setOrientation('Phone is facing down');
+        } else if (z < -0.7) {
+          setOrientation('Phone is facing up');
+        } else {
+          setOrientation('');
+        }
+      })
+    );
+    Accelerometer.setUpdateInterval(1000);
+  };
+
+  const _unsubscribe = () => {
+    subscription && subscription.remove();
+    setSubscription(null);
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -109,6 +139,7 @@ export default function StatusScreen() {
                 </View>
               </View>
             )}
+            <Text style={styles.orientationText}>{orientation}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -179,5 +210,11 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 40,
     fontWeight: 'bold',
+  },
+  orientationText: {
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: 'center',
+    color: '#666',
   },
 }); 
