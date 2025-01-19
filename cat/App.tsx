@@ -3,7 +3,7 @@ import { StyleSheet, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import HistoryScreen from './screens/HistoryScreen';
+import ShopScreen from './screens/ShopScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import StatusScreen from './screens/StatusScreen';
 
@@ -17,7 +17,7 @@ export default function App() {
           tabBarIcon: ({ focused }) => {
             let imageSource;
 
-            if (route.name === 'History') {
+            if (route.name === 'Shop') {
               imageSource = require('./assets/history.png');
             } else if (route.name === 'Profile') {
               imageSource = require('./assets/profile.png');
@@ -55,10 +55,10 @@ export default function App() {
             marginTop: 8,
           },
         })}
-        initialRouteName="History"
+        initialRouteName="Shop"
       >
         <Tab.Screen name="Status" component={StatusScreen} />
-        <Tab.Screen name="History" component={HistoryScreen} />
+        <Tab.Screen name="Shop" component={ShopScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
       <StatusBar style="auto" />
