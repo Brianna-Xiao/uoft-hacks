@@ -1,10 +1,41 @@
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function HistoryScreen() {
+  const [history, setHistory] = useState<{ timestamp: string, length: string }[]>([]);
+
+  const loadHistory = async () => {
+    try {
+      const storedHistory = await AsyncStorage.getItem('timerHistory');
+      if (storedHistory) {
+        setHistory(JSON.parse(storedHistory));
+      }
+    } catch (error) {
+      console.error('Failed to load history', error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadHistory();
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
-      </View>
+      <Text style={styles.title}>History</Text>
+      <FlatList
+        data={history}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.historyItem}>
+            <Text style={styles.historyText}>Time: {item.timestamp}</Text>
+            <Text style={styles.historyText}>Length: {item.length}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -12,19 +43,20 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 40,
     marginBottom: 20,
   },
-  contentContainer: {
-    width: '100%',
-    padding: 20,
-    alignItems: 'center',
+  historyItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  historyText: {
+    fontSize: 18,
   },
 }); 

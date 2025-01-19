@@ -14,6 +14,7 @@ import { Accelerometer } from 'expo-sensors';
 import Sleep from '../components/Sleep';
 import { Subscription } from 'expo-sensors/build/Pedometer';
 import Sick from '../components/Sick';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StatusScreen() {
   const [minutes, setMinutes] = useState('');
@@ -22,11 +23,42 @@ export default function StatusScreen() {
   const [isPaused, setIsPaused] = useState(false);
   const [orientation, setOrientation] = useState('');
   const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [history, setHistory] = useState<{ timestamp: string, length: string }[]>([]);
+  const [initialMinutes, setInitialMinutes] = useState<number | null>(null);
 
   useEffect(() => {
     _subscribe();
     return () => _unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const storedHistory = await AsyncStorage.getItem('timerHistory');
+        if (storedHistory) {
+          setHistory(JSON.parse(storedHistory));
+        }
+      } catch (error) {
+        console.error('Failed to load history', error);
+      }
+    };
+
+    loadHistory();
+  }, []);
+
+  // useEffect(() => {
+  //   const clearHistoryOnce = async () => {
+  //     try {
+  //       await AsyncStorage.removeItem('timerHistory');
+  //       setHistory([]);
+  //       console.log('History cleared');
+  //     } catch (error) {
+  //       console.error('Failed to clear history', error);
+  //     }
+  //   };
+
+  //   clearHistoryOnce();
+  // }, []);
 
   const _subscribe = () => {
     setSubscription(
@@ -51,6 +83,14 @@ export default function StatusScreen() {
     setSubscription(null);
   };
 
+  const saveHistory = async (newHistory: { timestamp: string, length: string }[]) => {
+    try {
+      await AsyncStorage.setItem('timerHistory', JSON.stringify(newHistory));
+    } catch (error) {
+      console.error('Failed to save history', error);
+    }
+  };
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
@@ -58,17 +98,28 @@ export default function StatusScreen() {
       interval = setInterval(() => {
         setSeconds(seconds => seconds - 1);
       }, 1000);
-    } else if (seconds === 0) {
+    } else if (seconds === 0 && isActive) {
       setIsActive(false);
       setIsPaused(false);
+      const newHistory = [
+        ...history, 
+        { 
+          timestamp: new Date().toLocaleString(), 
+          length: initialMinutes !== null ? formatTime(initialMinutes * 60) : '0:00'
+        }
+      ];
+      setHistory(newHistory);
+      saveHistory(newHistory);
     }
 
     return () => clearInterval(interval);
-  }, [isActive, isPaused, seconds]);
+  }, [isActive, isPaused, seconds, history, initialMinutes]);
 
   const startTimer = () => {
     if (minutes) {
-      setSeconds(parseInt(minutes) * 60);
+      const parsedMinutes = parseInt(minutes);
+      setInitialMinutes(parsedMinutes);
+      setSeconds(parsedMinutes * 60);
       setIsActive(true);
       setIsPaused(false);
       setMinutes('');
@@ -88,7 +139,18 @@ export default function StatusScreen() {
   const formatTime = (totalSeconds: number) => {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
+    console.log('Formatting Time:', mins, secs);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  const clearHistory = async () => {
+    try {
+      await AsyncStorage.removeItem('timerHistory');
+      setHistory([]);
+      console.log('History cleared');
+    } catch (error) {
+      console.error('Failed to clear history', error);
+    }
   };
 
   return (
@@ -100,15 +162,15 @@ export default function StatusScreen() {
         <View style={styles.container}>
           <View style={styles.content}>
             <Text style={styles.title}>Status</Text>
-          {!isActive ? (
+            {!isActive ? (
               <Sleep />
-          ) : orientation === 'up' ? (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Sick />
-            </View>
-          ) : (
-            <Sleep />
-          )}
+            ) : orientation === 'up' ? (
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Sick />
+              </View>
+            ) : (
+              <Sleep />
+            )}
           </View>
           <View style={styles.timerContainer}>
             {!isActive ? (
