@@ -3,6 +3,14 @@
     "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "dependencies": {
-    "expo": "^52.0.25"
+    "expo": "^52.0.25",
+    "metro-inspector-proxy": "^0.78.1",
+    "nativewind": "^4.1.23",
+    "react-native": "^0.76.6"
+  },
+  "devDependencies": {
+    "@types/react": "~18.3.12",
+    "expo-cli": "^4.0.17",
+    "typescript": "^5.3.3"
   }
 }
