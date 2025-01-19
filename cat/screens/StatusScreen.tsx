@@ -15,8 +15,6 @@ import Sleep from '../components/Sleep';
 import { Subscription } from 'expo-sensors/build/Pedometer';
 import Sick from '../components/Sick';
 
-var checkOrientation 
-
 export default function StatusScreen() {
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState(0);
@@ -35,17 +33,17 @@ export default function StatusScreen() {
       Accelerometer.addListener(accelerometerData => {
         const { z } = accelerometerData;
         if (z > 0.7) {
-          // setOrientation('Phone is facing down');
           setOrientation('down');
+          setIsPaused(false); // Resume the timer when the phone is faced down
         } else if (z < -0.7) {
-          // setOrientation('Phone is facing up');
           setOrientation('up');
+          setIsPaused(true); // Pause the timer when the phone is faced up
         } else {
           setOrientation('');
         }
       })
     );
-    Accelerometer.setUpdateInterval(1000); //update once every second but maybe lower to make more seamless later
+    Accelerometer.setUpdateInterval(1000); // Update once every second
   };
 
   const _unsubscribe = () => {
@@ -152,7 +150,6 @@ export default function StatusScreen() {
                 </View>
               </View>
             )}
-            {/* <Text style={styles.orientationText}>{orientation}</Text> */}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -230,4 +227,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#666',
   },
-}); 
+});

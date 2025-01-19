@@ -18,7 +18,7 @@ export default function App() {
             let imageSource;
 
             if (route.name === 'Shop') {
-              imageSource = require('./assets/history.png');
+              imageSource = require('./assets/shop.png');
             } else if (route.name === 'Profile') {
               imageSource = require('./assets/profile.png');
             } else if (route.name === 'Status') {
