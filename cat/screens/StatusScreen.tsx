@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#699AB2',
     padding: 12,
     borderRadius: 8,
   },
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stopButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#8B6B54',
   },
   buttonText: {
     color: '#fff',
