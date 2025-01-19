@@ -3,10 +3,9 @@ import { StyleSheet, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import ShopScreen from './screens/ShopScreen';
+import HistoryScreen from './screens/HistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import StatusScreen from './screens/StatusScreen';
-import HistoryScreen from './screens/HistoryScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,41 +17,49 @@ export default function App() {
           tabBarIcon: ({ focused }) => {
             let imageSource;
 
-            // if (route.name === 'Shop') {
-            //   imageSource = require('./assets/shop.png');
-            // } else 
-            if (route.name === 'Profile') {
+            if (route.name === 'History') {
+              imageSource = require('./assets/history.png');
+            } else if (route.name === 'Profile') {
               imageSource = require('./assets/profile.png');
             } else if (route.name === 'Status') {
               imageSource = require('./assets/status.png');
             }
-            else if (route.name === 'History') {
-              imageSource = require('./assets/shop.png');
-            }
 
             return (
-              <View style={[styles.iconContainer, focused && styles.focusedIcon]}>
+              <View style={[
+                styles.iconContainer,
+                focused && styles.focusedIconContainer
+              ]}>
                 <Image source={imageSource} style={styles.icon} />
               </View>
             );
           },
-          tabBarShowLabel: false,
-          headerStyle: {
-            height: 110,
+          tabBarStyle: {
+            height: 100,
+            paddingTop: 15,
+            paddingBottom: 20,
+            borderTopWidth: 1,
+            borderTopColor: '#999',
+            elevation: 8,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: -4,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
           },
+          tabBarLabelStyle: {
+            fontSize: 14,
+            paddingBottom: 12,
+            marginTop: 8,
+          },
+          tabBarActiveTintColor: '#888',
+          tabBarInactiveTintColor: '#888',
         })}
+        initialRouteName="History"
       >
         <Tab.Screen name="Status" component={StatusScreen} />
-        {/* <Tab.Screen 
-          name="Shop" 
-          component={ShopScreen}
-          options={{
-            headerRight: () => (
-              <View style={styles.headerCoinContainer}>
-              </View>
-            ),
-          }}
-        /> */}
         <Tab.Screen name="History" component={HistoryScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
@@ -62,27 +69,24 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  iconContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 50,
-    height: 50,
   },
-  focusedIcon: {
-    backgroundColor: '#E8E8E8',
-    borderRadius: 25,
+  iconContainer: {
+    padding: 12,
+    borderRadius: 12,
+  },
+  focusedIconContainer: {
+    backgroundColor: 'rgba(105, 154, 178, 0.3)',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: -10,
   },
   icon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
+    width: 32,
+    height: 32,
   },
-  headerCoinContainer: {
-    marginRight: 15,
-  },
-  headerCoin: {
-    width: 150,
-    height: 30,
-    resizeMode: 'contain',
-  }
 });
