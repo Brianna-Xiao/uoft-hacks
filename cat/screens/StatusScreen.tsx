@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native';
+import Sleep from '../components/Sleep';
 
 export default function StatusScreen() {
   const [minutes, setMinutes] = useState('');
@@ -66,6 +67,7 @@ export default function StatusScreen() {
         <View style={styles.container}>
           <View style={styles.content}>
             <Text style={styles.title}>Status</Text>
+            <Sleep />
           </View>
           <View style={styles.timerContainer}>
             {!isActive ? (
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 40,
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 24,
