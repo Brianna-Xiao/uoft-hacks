@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
 
-import sleepImage from '../assets/sleep.png';
+const sleepImage = require('../assets/sleep.png');
 
 const Sleep = () => {
     const scale = useRef(new Animated.Value(0.9)).current;
