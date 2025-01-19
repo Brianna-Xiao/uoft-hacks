@@ -13,6 +13,9 @@ import {
 import { Accelerometer } from 'expo-sensors';
 import Sleep from '../components/Sleep';
 import { Subscription } from 'expo-sensors/build/Pedometer';
+import Sick from '../components/Sick';
+
+var checkOrientation 
 
 export default function StatusScreen() {
   const [minutes, setMinutes] = useState('');
@@ -32,15 +35,17 @@ export default function StatusScreen() {
       Accelerometer.addListener(accelerometerData => {
         const { z } = accelerometerData;
         if (z > 0.7) {
-          setOrientation('Phone is facing down');
+          // setOrientation('Phone is facing down');
+          setOrientation('down');
         } else if (z < -0.7) {
-          setOrientation('Phone is facing up');
+          // setOrientation('Phone is facing up');
+          setOrientation('up');
         } else {
           setOrientation('');
         }
       })
     );
-    Accelerometer.setUpdateInterval(1000);
+    Accelerometer.setUpdateInterval(1000); //update once every second but maybe lower to make more seamless later
   };
 
   const _unsubscribe = () => {
@@ -96,8 +101,10 @@ export default function StatusScreen() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.content}>
-            <Text style={styles.title}>Status</Text>
-            <Sleep />
+          <Text style={styles.title}>Status</Text>
+            {orientation === 'up' ? (
+              <Sick />
+            ): (<Sleep />)}
           </View>
           <View style={styles.timerContainer}>
             {!isActive ? (
@@ -134,12 +141,12 @@ export default function StatusScreen() {
                     style={[styles.button, styles.controlButton, styles.stopButton]}
                     onPress={stopTimer}
                   >
-                    <Text style={styles.buttonText}>Rest</Text>
+                    <Text style={styles.buttonText}>Reset</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
-            <Text style={styles.orientationText}>{orientation}</Text>
+            {/* <Text style={styles.orientationText}>{orientation}</Text> */}
           </View>
         </View>
       </TouchableWithoutFeedback>

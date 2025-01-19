@@ -57,7 +57,7 @@ export default function App() {
         })}
         initialRouteName="History"
       >
-        <Tab.Screen name="Status" component={StatusScreen} />
+        <Tab.Screen name="Status"  component={StatusScreen}/>
         <Tab.Screen name="History" component={HistoryScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
