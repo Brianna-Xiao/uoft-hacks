@@ -103,7 +103,9 @@ export default function StatusScreen() {
           <View style={styles.content}>
           <Text style={styles.title}>Status</Text>
             {orientation === 'up' ? (
-              <Sick />
+              <View style={styles.content}>
+                <Sick/>
+              </View>
             ): (<Sleep />)}
           </View>
           <View style={styles.timerContainer}>
